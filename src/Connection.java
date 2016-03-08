@@ -19,19 +19,19 @@ import java.util.logging.Logger;
  * @author thiago
  */
 public class Connection implements Runnable {
-   Socket socket;
+   Socket clientSocket;
    int clientId;
 
-   Connection(Socket socket, int clientId) {
-      this.socket = socket;
+   Connection(Socket clientSocket, int clientId) {
+      this.clientSocket = clientSocket;
       this.clientId = clientId;
    }
 
    @Override
    public void run()  {
       try {
-        DataInputStream clientIn = new DataInputStream (socket.getInputStream());
-        PrintStream clientOut = new PrintStream(socket.getOutputStream());
+        DataInputStream clientIn = new DataInputStream (clientSocket.getInputStream());
+        PrintStream clientOut = new PrintStream(clientSocket.getOutputStream());
         byte[] buffer = new byte[4096];
         String message;
 
@@ -41,7 +41,7 @@ public class Connection implements Runnable {
             if(message.contains("\\close")){
                 clientIn.close();
                 clientOut.close();
-                socket.close();
+                clientSocket.close();
             }
             System.out.print("Client " + clientId + " says: " + message);
             clientOut.print("Received: " + message);
